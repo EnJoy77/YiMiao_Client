@@ -19,7 +19,7 @@ const config = {
       remove: process.env.UNI_PLATFORM !== 'h5'
     }),
     require('@dcloudio/vue-cli-plugin-uni/packages/postcss')
-  ]
+  ],
 }
 if (webpack.version[0] > 4) {
   delete config.parser

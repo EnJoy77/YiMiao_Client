@@ -28,8 +28,10 @@
 				<h1>疫苗攻略</h1>
 				<a href="">更多></a>
 				<scroll-view>
-				<div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div>
-
+					<div @click="selectVaccinesArticle">1</div>
+					<div>1</div>
+					<div>1</div>
+					<div>1</div>
 				</scroll-view>
 			</view>
 		</view>
@@ -41,6 +43,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { get } from '../../utils/request.js';
 export default Vue.extend({
 	data() {
 		return {
@@ -53,6 +56,31 @@ export default Vue.extend({
 	methods: {
 		handlechange(e: any) {
 			this.mycurrent = e.detail.current
+		},
+
+		/*async selectVaccinesArticle() {
+			try {
+				console.log("获取疫苗攻略数据try");
+				const res = await get("/vaccinesarticle/select");
+				if (res.status === 200) {
+					console.log(res.data.result[0]);
+				} else {
+					console.log(res.data.message);
+				}
+			} catch (error) {
+				console.log("Warning, 接口连接出错.");
+			}
+		}*/
+		
+		selectVaccinesArticle() {
+			uni.request({
+				url: 'http://localhost:8000/vaccinesarticle/select',
+				method: 'GET',
+				data: {},
+				success: res => { console.log(JSON.stringify(res)) },
+				fail: (err) => {console.log(JSON.stringify(err)) },
+				complete: () => { }
+			});
 		}
 	}
 });
@@ -125,4 +153,5 @@ export default Vue.extend({
 			margin-top: 10rpx;
 		}
 	}
-}</style>
+}
+</style>
