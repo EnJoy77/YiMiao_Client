@@ -1,36 +1,77 @@
-import axios from "axios";
-axios.defaults.headers.get["Content-Type"] = "application/json";
-axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-axios.defaults.baseURL = "http://localhost:8000";
-axios.interceptors.request.use((config) => {
-  console.log(config);
-  config.headers.Authorization = window.sessionStorage.getItem("token");
-  return config;
-});
+export default class Request {
+    http(param) {
+        // 请求参数
+        var url = param.url,
+            method = param.method,
+            header = {},
+            data = param.data || {},
+            token = param.token || "",
+            hideLoading = param.hideLoading || false;
 
-const post = (url, data = {}) => {
-  return new Promise((resolve, reject) => {
-    axios.post(url, data).then(
-      (response) => {
-        resolve(response);
-      },
-      (error) => {
-        reject(error);
-      }
-    );
-  });
-};
-const get = (url, params = {}) => {
-    console.log("get方法");
-  return new Promise((resolve, reject) => {
-    axios.get(url, { params }).then(
-      (response) => {
-        resolve(response);
-      },
-      (error) => {
-        reject(error);
-      }
-    );
-  });
-};
-export { post, get };
+        //拼接完整请求地址
+        var requestUrl = "http://localhost:8000" + url;
+        
+        //请求方式:GET或POST(POST需配置
+        // header: {'content-type' : "application/x-www-form-urlencoded"},)
+        if (method) {
+            method = method.toUpperCase(); //小写改为大写
+            if (method == "POST") {
+                header = {
+                    'content-type': "application/x-www-form-urlencoded"
+                };
+            } else {
+                header = {
+                    'content-type': "application/json"
+                };
+            }
+        }
+
+        //加载圈
+        if (!hideLoading) {
+            uni.showLoading({
+                title: '加载中...'
+            });
+        }
+
+        // 返回promise
+        return new Promise((resolve, reject) => {
+            // 请求
+            uni.request({
+                url: requestUrl,
+                data: data,
+                method: method,
+                header: header,
+                success: (res) => {
+                  // 判断 请求api 格式是否正确
+                  if (res.statusCode && res.statusCode != 200) {
+                      uni.showToast({
+                          title: "api错误" + res.errMsg,
+                          icon: 'none'
+                      });
+                      return;
+                  }
+                  // 将结果抛出
+                  resolve(res)
+              },
+                //请求失败
+                fail: (e) => {
+                  console.log("请求失败");
+                    uni.showToast({
+                        title: "请求失败" + e.data.msg,
+                        icon: 'none'
+                    });
+                    resolve(e.data);
+                },
+                //请求完成
+                complete() {
+                    //隐藏加载
+                    if (!hideLoading) {
+                        uni.hideLoading();
+                    }
+                    resolve();
+                    return;
+                }
+            })
+        })
+    }
+}

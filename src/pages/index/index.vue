@@ -28,7 +28,7 @@
 				<h1>疫苗攻略</h1>
 				<a href="">更多></a>
 				<scroll-view>
-					<div @click="selectVaccinesArticle">1</div>
+					<div @click="select">1</div>
 					<div>1</div>
 					<div>1</div>
 					<div>1</div>
@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { get } from '../../utils/request.js';
+import { selectVaccinesArticle } from '../../api/vaccinesArticle.js';
 export default Vue.extend({
 	data() {
 		return {
@@ -57,7 +57,10 @@ export default Vue.extend({
 		handlechange(e: any) {
 			this.mycurrent = e.detail.current
 		},
-
+		async select(){
+			const res=await selectVaccinesArticle()
+			console.log(res)
+		}
 		/*async selectVaccinesArticle() {
 			try {
 				console.log("获取疫苗攻略数据try");
@@ -71,7 +74,7 @@ export default Vue.extend({
 				console.log("Warning, 接口连接出错.");
 			}
 		}*/
-		
+		/*
 		selectVaccinesArticle() {
 			uni.request({
 				url: 'http://localhost:8000/vaccinesarticle/select',
@@ -81,7 +84,7 @@ export default Vue.extend({
 				fail: (err) => {console.log(JSON.stringify(err)) },
 				complete: () => { }
 			});
-		}
+		}*/
 	}
 });
 </script>
